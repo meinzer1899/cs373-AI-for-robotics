@@ -1,10 +1,15 @@
-p = [0.2, 0.2, 0.2, 0.2, 0.2]
+
+p = [0, 1, 0, 0, 0] # input distribution
 world = ['green', 'red', 'red', 'green', 'green']
 measurements = ['red', 'green']
 pHit = 0.6
 pMiss = 0.2
 
 def sense(p, Z):
+    '''
+    This function returns
+    '''
+
     q = []
     for i in range(len(p)):
         hit = (Z == world[i])
@@ -16,7 +21,18 @@ def sense(p, Z):
 
     return q
 
-for entry in measurements:
-    p = sense(p, entry)
+def move(p, U):
+    '''
+    Returns a new distribution 
+    q, shifted to the right by U units. If U=0, q should 
+    be the same as p.
+    '''
+    q = []
+    for i in range(len(p)):
+        q.append(p[(i-U) % len(p)])
+    return q
 
-print(p)
+# for entry in measurements:
+#     p = sense(p, entry)
+
+print(move(p, 0))
