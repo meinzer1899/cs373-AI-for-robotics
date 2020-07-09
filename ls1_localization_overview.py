@@ -48,4 +48,11 @@ def move(p, U):
 # for entry in measurements:
 #     p = sense(p, entry)
 
+# let the robot move x times
+# note: for x -> inf, the distribution reaches minimum uniform distribution 
+# of pMiss (here 0.2), which means most uncertain of its position
+for step in range(2):
+    p = move(p, 1)
+
+
 print(move(p, 1))
