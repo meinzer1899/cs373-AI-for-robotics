@@ -2,10 +2,10 @@
 '''
 This is text
 '''
-
-p = [0, 1, 0, 0, 0] # input distribution
+p = [0.2, 0.2, 0.2, 0.2, 0.2]
 world = ['green', 'red', 'red', 'green', 'green']
 measurements = ['red', 'green']
+motions = [1, 1]
 pHit = 0.6
 pMiss = 0.2
 pExact = 0.8
@@ -45,14 +45,16 @@ def move(p, U):
 
     return q
 
-# for entry in measurements:
-#     p = sense(p, entry)
-
 # let the robot move x times
 # note: for x -> inf, the distribution reaches minimum uniform distribution 
 # of pMiss (here 0.2), which means most uncertain of its position
-for step in range(2):
-    p = move(p, 1)
+for step in range(len(measurements)):
+    p = sense(p, measurements[step])
+    p = move(p, motions[step])
 
 
-print(move(p, 1))
+print(p)
+# Explaination:
+# Belief = PROBABILITY
+# SENSE = PRODUCT (FOLLOWED BY NORMALIZATION)
+# MOVE = CONVOLUTION (= ADDITION)
