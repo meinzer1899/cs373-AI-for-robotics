@@ -52,7 +52,7 @@ def localize(colors, measurements, motions, sensor_right, p_move):
 
     for step in range(len(measurements)):
         p = sense(p, colors, measurements[step], sensor_right)
-        # p = move(p, motions[step], p_move)
+        p = move(p, motions[step], p_move)
 
     return p
 
@@ -67,8 +67,11 @@ def sense(p, colors, measurement, sensor_right):
     colors      [4x5]
     measurement [1]
     sensor      [1]
+
+    IMPORTANT:
+    len(p) gives the rows, len(p[row]) for row in rows gives the colums of 
+    single row
     '''
-    cols = len(p[0]) # 5
     rows = len(p) # 4
     sensor_wrong = (1-sensor_right)
 
@@ -77,11 +80,11 @@ def sense(p, colors, measurement, sensor_right):
 
     # we can now update the distribution depending weather there was a hit or not
     p = [[p[row][col] * (hit[row][col] * sensor_right + (1-hit[row][col]) * sensor_wrong) \
-            for col in range(cols)] for row in range(rows)]
+            for col in range(len(p[row]))] for row in range(rows)]
 
     # normalize
     sumRet = sum(sum(p, []))
-    p = [[p[row][col] / sumRet for col in range(cols)] for row in range(rows)]
+    p = [[p[row][col] / sumRet for col in range(len(p[row]))] for row in range(rows)]
 
     return p
 
@@ -98,13 +101,17 @@ def move(p, motion, p_move):
     #  [-1,0] - up
 
     '''
-    q = []
-    cols = len(p[0])
     rows = len(p)
     y_move = motion[0]
     x_move = motion[1]
 
-    p = [[p[(row+y_move) % rows][(col-x_move) % cols] * p_move for col in range(cols)] for row in range(rows)]
+
+    p = [[p[(row+y_move) % rows][(col-x_move) % len(p[row])] * p_move for col in range(len(p[row]))] for row in range(rows)]
+
+    # for row in range(rows):
+    #     for col in range(cols):
+    #         q.append(p_move * p[(row-x_move) % rows][(col-y_move) % cols])
+
 
     return p
 
@@ -119,10 +126,10 @@ def move(p, motion, p_move):
 # TESTS 1-3 SIND PASSED. NÄCHSTER SCHRITT IST DIE FUNKTION "MOVE"
 
 colors = [['G', 'G', 'G'],
-                  ['G', 'R', 'R'],
-                            ['G', 'G', 'G']]
-measurements = ['R']
-motions = [[0,0]]
+            ['G', 'R', 'R'],
+            ['G', 'G', 'G']]
+measurements = ['R', 'R']
+motions = [[0,0], [0,1]]
 sensor_right = 0.8
 p_move = 1.0
 
@@ -132,10 +139,10 @@ p_move = 1.0
 #  [0.00739, 0.00894, 0.11272, 0.35350, 0.04065],
 #  [0.00910, 0.00715, 0.01434, 0.04313, 0.03642]]
 # (within a tolerance of +/- 0.001 for each entry)
-# colors = [['R','G','G','R','R'],
-#           ['R','R','G','R','R'],
-#           ['R','R','G','G','R'],
-#           ['R','R','R','R','R']]
+# colors = [['R','G','G','R','R'], # row 1
+#           ['R','R','G','R','R'], # row 2
+#           ['R','R','G','G','R'], # row 3
+#           ['R','R','R','R','R']] # row 4
 
 # measurements = ['G','G','G','G','G']
 # motions = [[0,0],[0,1],[1,0],[1,0],[0,1]]
