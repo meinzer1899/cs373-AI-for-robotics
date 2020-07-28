@@ -52,7 +52,7 @@ def localize(colors, measurements, motions, sensor_right, p_move):
 
     for step in range(len(measurements)):
         p = sense(p, colors, measurements[step], sensor_right)
-        p = move(p, motions[step], p_move)
+        # p = move(p, motions[step], p_move)
 
     return p
 
@@ -68,39 +68,48 @@ def sense(p, colors, measurement, sensor_right):
     measurement [1]
     sensor      [1]
     '''
-    rows = len(colors[0]) # 5
-    cols = len(colors) # 4
+    cols = len(p[0]) # 5
+    rows = len(p) # 4
     sensor_wrong = (1-sensor_right)
 
     # hit :=> does the robot sees the color in the measurement in the color map
     hit = [[(measurement == element) for element in row] for row in colors]
 
     # we can now update the distribution depending weather there was a hit or not
-    p = [[p[col][row] * (hit[col][row] * sensor_right + (1-hit[col][row]) * sensor_wrong) \
-            for row in range(rows)] for col in range(cols)]
+    p = [[p[row][col] * (hit[row][col] * sensor_right + (1-hit[row][col]) * sensor_wrong) \
+            for col in range(cols)] for row in range(rows)]
 
     # normalize
     sumRet = sum(sum(p, []))
-    p = [[p[col][row] / sumRet for row in range(rows)] for col in range(cols)]
+    p = [[p[row][col] / sumRet for col in range(cols)] for row in range(rows)]
 
     return p
 
 
-def move(p, motion, p_stay):
+def move(p, motion, p_move):
     '''
     Robot movement
+
+    # Motion:
+    #  [0,0] - stay
+    #  [0,1] - right
+    #  [0,-1] - left
+    #  [1,0] - down
+    #  [-1,0] - up
+
     '''
+    q = []
+    cols = len(p[0])
+    rows = len(p)
+    y_move = motion[0]
+    x_move = motion[1]
+
+    p = [[p[(row+y_move) % rows][(col-x_move) % cols] * p_move for col in range(cols)] for row in range(rows)]
 
     return p
 
 
 #############################################################
-# For the following test case, your output should be
-# [[0.01105, 0.02464, 0.06799, 0.04472, 0.02465],
-#  [0.00715, 0.01017, 0.08696, 0.07988, 0.00935],
-#  [0.00739, 0.00894, 0.11272, 0.35350, 0.04065],
-#  [0.00910, 0.00715, 0.01434, 0.04313, 0.03642]]
-# (within a tolerance of +/- 0.001 for each entry)
 
 # TEST 1: PASSED
 # TEST 2: PASSED
@@ -109,16 +118,20 @@ def move(p, motion, p_stay):
 #!!!!!!!!!!!!!!!!!!!!! STAND 11.07.
 # TESTS 1-3 SIND PASSED. NÄCHSTER SCHRITT IST DIE FUNKTION "MOVE"
 
-# TEST 4
 colors = [['G', 'G', 'G'],
-        ['G', 'R', 'R'],
-        ['G', 'G', 'G']]
-
-measurements = ['R', 'R']
-motions = [[0,0], [0,1]]
+                  ['G', 'R', 'R'],
+                            ['G', 'G', 'G']]
+measurements = ['R']
+motions = [[0,0]]
 sensor_right = 0.8
 p_move = 1.0
 
+# For the following test case, your output should be
+# [[0.01105, 0.02464, 0.06799, 0.04472, 0.02465],
+#  [0.00715, 0.01017, 0.08696, 0.07988, 0.00935],
+#  [0.00739, 0.00894, 0.11272, 0.35350, 0.04065],
+#  [0.00910, 0.00715, 0.01434, 0.04313, 0.03642]]
+# (within a tolerance of +/- 0.001 for each entry)
 # colors = [['R','G','G','R','R'],
 #           ['R','R','G','R','R'],
 #           ['R','R','G','G','R'],
@@ -128,5 +141,7 @@ p_move = 1.0
 # motions = [[0,0],[0,1],[1,0],[1,0],[0,1]]
 # measurements = ['R']
 # motions = [[0,0]]
-p = localize(colors,measurements,motions,sensor_right, p_move)
+# sensor_right = 0.7
+# p_move = 0.8
+p = localize(colors, measurements, motions, sensor_right, p_move)
 show(p) # displays your answer
