@@ -147,7 +147,7 @@ def kalman_filter(x, P):
     for n in range(len(measurements)):
         Z = matrix([[measurements[n]]])
         # measurement update
-        y = Z - H * x
+        y = Z.transpose() - H * x
         S = H * P * H.transpose() + R
         K = P * H.transpose() * S.inverse()
         x = x + (K * y) # * dt, dt=1, x => x_prime
