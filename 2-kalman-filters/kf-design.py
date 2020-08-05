@@ -1,7 +1,7 @@
 # Write a function 'kalman_filter' that implements a multi-
 # dimensional Kalman Filter for the example given
 
-from math import *
+from math import sqrt
 
 class matrix:
 
