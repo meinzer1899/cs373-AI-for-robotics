@@ -107,6 +107,7 @@ class robot:
             x = cx + ( sin(self.orientation+turn) * R )
             y = cy - ( cos(self.orientation+turn) * R )
 
+
 # motions = [[0.0, 10.0], [pi / 6.0, 10], [0.0, 20.0]]
 #       Robot:     [x=0.0 y=0.0 orient=0.0]
 #       Robot:     [x=10.0 y=0.0 orient=0.0]
@@ -118,10 +119,25 @@ class robot:
 
         return self # make sure your move function returns an instancet
         # of the robot class with the correct coordinates.
-    
 
-    ############## ONLY ADD/MODIFY CODE ABOVE HERE ####################
+    # --------
+    # sense:
+    #   obtains bearings from positions
+    #
 
+    def sense(self, add_noise = 1): #do not change the name of this function
+        Z = []
+
+        for mark in range(len(landmarks)):
+            bearing = atan2(landmarks[mark][0] - self.y,
+                            landmarks[mark][1] - self.x) - self.orientation
+            if add_noise:
+                bearing += random.gauss(0.0, self.bearing_noise)
+
+            bearing %= 2.0 * pi
+            Z.append(bearing)
+
+        return Z #Leave this line here. Return vector Z of 4 bearings.
 
 ## IMPORTANT: You may uncomment the test cases below to test your code.
 ## But when you submit this code, your test cases MUST be commented
