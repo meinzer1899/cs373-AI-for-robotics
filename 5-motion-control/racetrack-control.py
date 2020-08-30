@@ -1,3 +1,5 @@
+#!/usr/bin/python2.7
+
 # --------------
 # User Instructions
 # 
@@ -20,7 +22,6 @@
 
 from math import *
 import random
-
 
 # ------------------------------------------------
 # 
