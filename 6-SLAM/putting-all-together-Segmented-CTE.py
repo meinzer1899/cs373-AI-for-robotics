@@ -348,8 +348,8 @@ class robot:
 
 
     def __repr__(self):
-        # return '[x=%.5f y=%.5f orient=%.5f]'  % (self.x, self.y, self.orientation)
-        return '[%.5f, %.5f]'  % (self.x, self.y)
+        return '[x=%.5f y=%.5f orient=%.5f]'  % (self.x, self.y, self.orientation)
+        # return '[%.5f, %.5f]'  % (self.x, self.y)
 
 
 
@@ -462,19 +462,33 @@ def run(grid, goal, spath, params, printflag = False, speed = 0.1, timeout = 100
 
         diff_cte = - cte
 
-
-        # ----------------------------------------
-        # compute the CTE
-
         # start with the present robot estimate
-        estimate = filter.get_position()
+        # estimate = filter.get_position()
+        # est_X = estimate[0]
+        # est_Y = estimate[1]
 
-        ### ENTER CODE HERE
+        # P1
+        x1 = spath[index][0]
+        y1 = spath[index][1]
+        # P2
+        x2 = spath[index+1][0]
+        y2 = spath[index+1][1]
 
-        u = 0
+        dx = x2 - x1
+        dy = y2 - y1
 
-        # ----------------------------------------
+        Rx = myrobot.x - x1
+        Ry = myrobot.y - y1
 
+        # u is the robot estimate projected onto the path segment
+        # dot product: u_vec = R_vec * (delta_vec / |delta_vec|)
+        u = Rx * dx + Ry * dy / sqrt(dx**2 + dy**2)
+        # cte is the estimate projected onto the normal of the path segment
+        cte = Ry * dx - Rx * dy / sqrt(dx**2 + dy**2)
+
+        # pick the next path segment
+        if u > 1.0:
+            index += 1
 
         diff_cte += cte
 
