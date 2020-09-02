@@ -326,15 +326,26 @@ class matrix:
         [5.0]]
 """
 def doit(initial_pos, move1, move2):
-    Omega = matrix(
-        [[2,-1,0],
-         [-1,2,-1],
-         [0,-1,1]])
-    xi =matrix([[-8], [2], [3]])
-    Omega.show()
-    xi.show()
-    mu = Omega.inverse() * xi
+    # Omega = matrix(
+    #     [[2,-1,0],
+    #      [-1,2,-1],
+    #      [0,-1,1]])
+    # xi =matrix([[-8], [2], [3]])
+
+    #move0 (init)
+    Omega = matrix([[1.,0.,0.],[0.,0.,0.],[0.,0.,0.]])
+    Xi = matrix([[initial_pos], [0.], [0.]])
+
+    #move1
+    Omega += matrix([[1., -1., 0], [-1., 1., 0], [0., 0., 0.]])
+    Xi += matrix([[-move1], [move1], [0.]])
+
+    #move2
+    Omega += matrix([[0., 0., 0.], [0., 1., -1.], [0., -1., 1.]])
+    Xi += matrix([[0], [-move2], [move2]])
+    # Omega.show()
+    mu = Omega.inverse() * Xi
     mu.show()
     return mu
 
-doit(-3, 5, 3)
+doit(-3., 5., 3.)
