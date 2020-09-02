@@ -11,9 +11,10 @@
 
 
  
-from math import *
 import random
+from math import *
 
+import numpy as np
 
 #===============================================================
 #
@@ -325,6 +326,15 @@ class matrix:
         [5.0]]
 """
 def doit(initial_pos, move1, move2):
+    Omega = matrix(
+        [[2,-1,0],
+         [-1,2,-1],
+         [0,-1,1]])
+    xi =matrix([[-8], [2], [3]])
+    Omega.show()
+    xi.show()
+    mu = Omega.inverse() * xi
+    mu.show()
     return mu
 
 doit(-3, 5, 3)
