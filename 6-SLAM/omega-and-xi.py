@@ -325,7 +325,7 @@ class matrix:
         [2.0],
         [5.0]]
 """
-def doit(initial_pos, move1, move2):
+def doit(initial_pos, move1, move2, Z0, Z1, Z2):
     # Omega = matrix(
     #     [[2,-1,0],
     #      [-1,2,-1],
@@ -343,9 +343,43 @@ def doit(initial_pos, move1, move2):
     #move2
     Omega += matrix([[0., 0., 0.], [0., 1., -1.], [0., -1., 1.]])
     Xi += matrix([[0], [-move2], [move2]])
-    # Omega.show()
+
+    Omega = Omega.expand(4, 4, [0, 1, 2], [0, 1, 2])
+    Xi = Xi.expand(4, 1, [0, 1, 2], [0])
+
+    Omega += matrix([[1.0, 0.0, 0.0, -1.0],
+                 [0.0, 0.0, 0.0, 0.0],
+                 [0.0, 0.0, 0.0, 0.0],
+                 [-1.0, 0.0, 0.0, 1.0]])
+    Xi    += matrix([[-Z0],
+                 [0.0],
+                 [0.0],
+                 [Z0]])
+
+    Omega += matrix([[0.0, 0.0, 0.0, 0.0],
+                 [0.0, 1.0, 0.0, -1.0],
+                 [0.0, 0.0, 0.0, 0.0],
+                 [0.0, -1.0, 0.0, 1.0]])
+    Xi    += matrix([[0.0],
+                 [-Z1],
+                 [0.0],
+                 [Z1]])
+
+    Omega += matrix([[0.0, 0.0, 0.0, 0.0],
+                 [0.0, 0.0, 0.0, 0.0],
+                 [0.0, 0.0, 5.0, -5.0],
+                 [0.0, 0.0, -5.0, 5.0]])
+    Xi    += matrix([[0.0],
+                 [0.0],
+                 [-Z2*5.],
+                 [Z2*5.]])
+
+
+
+    Omega.show('Omega: ')
+    Xi.show('Xi: ')
     mu = Omega.inverse() * Xi
-    mu.show()
+    mu.show('mu: ')
     return mu
 
-doit(-3., 5., 3.)
+doit(-3., 5., 3., 10., 5., 1.)
